@@ -1,0 +1,22 @@
+{
+  "name": "contact-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function for handling POST requests from Philomusica contact form",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philomusica/contact-lambda.git"
+  },
+  "author": "Joshua Crunden",
+  "license": "GPL v3.0",
+  "bugs": {
+    "url": "https://github.com/philomusica/contact-lambda/issues"
+  },
+  "homepage": "https://github.com/philomusica/contact-lambda#readme",
+  "dependencies": {
+    "axios": "^0.24.0"
+  }
+}
