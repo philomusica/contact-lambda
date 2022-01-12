@@ -33,7 +33,7 @@ exports.handler = async (event, context, callback) => {
     const capUrlWithParams = reCapUrl + "?secret=" + recaptchaSecret +"&response=" + recaptchaResponse;
     let verifyResult = await axios.post(capUrlWithParams);
     
-    if(verifyResult.data.success === true && verifyResult.data.score > 0.5) {
+    if(verifyResult.data.success === true) {
         await sendEmail(httpBody, function (err, data) {
             context.done(err, null);
         })
