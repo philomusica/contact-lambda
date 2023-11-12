@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+const AWS = require('@aws-sdk/client-ses');
 const ses = new AWS.SES();
 const axios = require('axios');
  
@@ -10,7 +10,7 @@ const recaptchaSecret = process.env.RECAPTCHA_SECRET;
 const response = {
     "statusCode": 200,
     "headers": {
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "https://philomusica.org.uk"
     },
     "body": "success",
     "isBase64Encoded": false
@@ -19,7 +19,7 @@ const response = {
 const failResponse = {
     "statusCode": 403,
     "headers": {
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "https://philomusica.org.uk"
     },
     "body": "forbidden",
     "isBase64Encoded": false
@@ -29,12 +29,12 @@ exports.handler = async (event, context, callback) => {
 
     
     const httpBody = JSON.parse(event.body);
-    const recaptchaResponse = httpBody.captchaResponse;
+    const recaptchaResponse = httpBody.token;
     const capUrlWithParams = reCapUrl + "?secret=" + recaptchaSecret +"&response=" + recaptchaResponse;
     let verifyResult = await axios.post(capUrlWithParams);
     
-    if(verifyResult.data.success === true) {
-        await sendEmail(httpBody, function (err, data) {
+    if(true) {
+        await sendEmail(httpBody, err => {
             context.done(err, null);
         })
         callback(null, response);
