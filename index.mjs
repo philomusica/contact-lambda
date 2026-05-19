@@ -1,6 +1,6 @@
-const AWS = require('@aws-sdk/client-ses');
-const ses = new AWS.SES();
-const axios = require('axios');
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+const sesClient = new SESClient({ region: "eu-west-1" });
+import axios from "axios";
  
 const RECEIVER = process.env.RECEIVER;
 const SENDER = process.env.SENDER;
@@ -25,30 +25,23 @@ const failResponse = {
     "isBase64Encoded": false
 };
 
-exports.handler = async (event, context, callback) => {
-
-    
+export const handler = async (event, context) => {
     const httpBody = JSON.parse(event.body);
     const recaptchaResponse = httpBody.token;
     const capUrlWithParams = reCapUrl + "?secret=" + recaptchaSecret +"&response=" + recaptchaResponse;
-    let verifyResult = await axios.post(capUrlWithParams);
-    
-    if(true) {
-        await sendEmail(httpBody, err => {
-            context.done(err, null);
-        })
-        callback(null, response);
+    const verifyResult = await axios.post(capUrlWithParams);
+    if (verifyResult.data.success === true) {
+        await sendEmail(httpBody);
+        return response;
     } else {
-        callback(null, failResponse);
+        return failResponse;
     }
-     
-    
 };
 
  
-const sendEmail = async (httpBody, done) => {
+const sendEmail = async (httpBody) => {
     console.log("sending email")
-    var params = {
+    const command = new SendEmailCommand({
         Destination: {
             ToAddresses: [
                 RECEIVER
@@ -67,6 +60,7 @@ const sendEmail = async (httpBody, done) => {
             }
         },
         Source: SENDER
-    };
-    ses.sendEmail(params, done);
+    });
+    await sesClient.send(command);
 }
+
